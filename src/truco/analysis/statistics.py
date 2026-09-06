@@ -58,8 +58,10 @@ class StatisticsAnalyzer:
 
         Returns:
             Dictionary with different conditional probabilities:
-            - when_multiple_flowers: Probability all flowers are in same team, given multiple players have flowers
-            - by_flower_count: Dict mapping flower count to probability all are in same team
+            - when_multiple_flowers: Probability all flowers are in same team,
+              given multiple players have flowers
+            - by_flower_count: Dict mapping flower count to probability all
+              are in same team
         """
         flower_counts = self.results.players_with_flower
         same_team_flags = self.results.all_flowers_same_team
@@ -104,8 +106,10 @@ class StatisticsAnalyzer:
 
         Returns:
             Dictionary with different conditional probabilities:
-            - when_multiple_piezas: Probability all piezas are in same team, given multiple players have piezas
-            - by_pieza_count: Dict mapping pieza count to probability all are in same team
+            - when_multiple_piezas: Probability all piezas are in same team,
+              given multiple players have piezas
+            - by_pieza_count: Dict mapping pieza count to probability all are
+              in same team
         """
         pieza_counts = self.results.players_with_pieza
         same_team_flags = self.results.all_piezas_same_team
@@ -148,8 +152,10 @@ class StatisticsAnalyzer:
 
         Returns:
             Dictionary with team advantage statistics:
-            - team_advantage_probability: Probability that one team has more flowers than the other
-            - flower_distribution_by_advantage: Distribution of flower count differences between teams
+            - team_advantage_probability: Probability that one team has more
+              flowers than the other
+            - flower_distribution_by_advantage: Distribution of flower count
+              differences between teams
         """
         result = {
             "team_advantage_probability": 0.0,
@@ -195,8 +201,10 @@ class StatisticsAnalyzer:
 
         Returns:
             Dictionary with team advantage statistics:
-            - team_advantage_probability: Probability that one team has more piezas than the other
-            - pieza_distribution_by_advantage: Distribution of pieza count differences between teams
+            - team_advantage_probability: Probability that one team has more
+              piezas than the other
+            - pieza_distribution_by_advantage: Distribution of pieza count
+              differences between teams
         """
         result = {
             "team_advantage_probability": 0.0,
