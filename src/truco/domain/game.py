@@ -1,5 +1,6 @@
 from typing import Dict, List, Optional
 
+from truco.domain.card import Card
 from truco.domain.deck import Deck
 from truco.domain.player import Player
 from truco.domain.team import Team
@@ -12,7 +13,7 @@ class Game:
         self.teams: List[Team] = []
         self.players: List[Player] = []
         self.deck = Deck()
-        self.muestra = None
+        self.muestra: Optional[Card] = None
 
         self._setup_teams_and_players()
 
@@ -89,6 +90,8 @@ class Game:
 
     def count_players_with_piezas(self) -> int:
         """Count how many players have at least one pieza."""
+        if self.muestra is None:
+            return 0
         return sum(1 for player in self.players if player.has_pieza(self.muestra))
 
     def get_pieza_distribution(self) -> Dict[int, int]:

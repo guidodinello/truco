@@ -1,8 +1,23 @@
 import random
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from truco.domain.game import Game
+
+
+class _RawSimulationData(TypedDict):
+    """Shape of one worker's raw simulation output, before it's combined
+    into a SimulationResult. Kept as a TypedDict (not SimulationResult
+    itself) since a worker never knows total_games across all workers."""
+
+    players_with_flower: List[int]
+    flower_distribution: List[Dict[int, int]]
+    all_flowers_same_team: List[bool]
+    players_with_pieza: List[int]
+    pieza_distribution: List[Dict[int, int]]
+    all_piezas_same_team: List[bool]
+    muestra_ranks: List[int]
+    muestra_suits: List[int]
 
 
 @dataclass(frozen=True, slots=True)
@@ -45,7 +60,7 @@ def worker_function(
     worker_seed: Optional[int],
     players_per_team: int,
     num_teams: int,
-) -> Dict[str, list]:
+) -> _RawSimulationData:
     game = Game(players_per_team, num_teams)
 
     players_with_flower = []
@@ -77,8 +92,11 @@ def worker_function(
         )
         all_piezas_same_team.append(all_piezas_same)
 
-        muestra_ranks.append(game.muestra.rank.value)
-        muestra_suits.append(game.muestra.suit.value)
+        muestra = game.muestra
+        if muestra is None:
+            raise RuntimeError("deal_cards() must be called before reading its muestra")
+        muestra_ranks.append(muestra.rank.value)
+        muestra_suits.append(muestra.suit.value)
 
     return {
         "players_with_flower": players_with_flower,
@@ -137,8 +155,13 @@ class Simulator:
             )
             all_piezas_same_team.append(all_piezas_same)
 
-            muestra_ranks.append(self.game.muestra.rank.value)
-            muestra_suits.append(self.game.muestra.suit.value)
+            muestra = self.game.muestra
+            if muestra is None:
+                raise RuntimeError(
+                    "deal_cards() must be called before reading its muestra"
+                )
+            muestra_ranks.append(muestra.rank.value)
+            muestra_suits.append(muestra.suit.value)
 
         return SimulationResult(
             total_games=len(players_with_flower),
@@ -173,6 +196,7 @@ class Simulator:
             sims_per_worker[i] += 1
 
         # Set up seeds for each worker to ensure reproducibility
+        worker_seeds: List[Optional[int]]
         if seed is not None:
             worker_seeds = [seed + i * 1000 for i in range(num_workers)]
         else:
@@ -189,7 +213,7 @@ class Simulator:
             results = pool.starmap(worker_function, args)
 
         # Combine results
-        combined = {
+        combined: Dict[str, List[Any]] = {
             "players_with_flower": [],
             "flower_distribution": [],
             "all_flowers_same_team": [],
@@ -201,8 +225,17 @@ class Simulator:
         }
 
         for result in results:
-            for key in combined:
-                combined[key].extend(result[key])
+            # Explicit per-key extends (not a loop over string keys): result
+            # is a TypedDict, which only supports literal-key subscripting -
+            # a dynamic str key isn't statically checkable against it.
+            combined["players_with_flower"].extend(result["players_with_flower"])
+            combined["flower_distribution"].extend(result["flower_distribution"])
+            combined["all_flowers_same_team"].extend(result["all_flowers_same_team"])
+            combined["players_with_pieza"].extend(result["players_with_pieza"])
+            combined["pieza_distribution"].extend(result["pieza_distribution"])
+            combined["all_piezas_same_team"].extend(result["all_piezas_same_team"])
+            combined["muestra_ranks"].extend(result["muestra_ranks"])
+            combined["muestra_suits"].extend(result["muestra_suits"])
 
         return SimulationResult(
             total_games=sum(sims_per_worker),

@@ -1,10 +1,10 @@
-from typing import List
+from typing import List, Optional
 
 from truco.domain.card import Card, Suit
 
 
 class Hand:
-    def __init__(self, cards: List[Card] = None):
+    def __init__(self, cards: Optional[List[Card]] = None):
         self.cards = cards or []
 
     def add_card(self, card: Card) -> None:
@@ -13,7 +13,7 @@ class Hand:
     def add_cards(self, cards: List[Card]) -> None:
         self.cards.extend(cards)
 
-    def has_flower(self, muestra: Card = None) -> bool:
+    def has_flower(self, muestra: Optional[Card] = None) -> bool:
         """
         Check if the hand has a flower.
 

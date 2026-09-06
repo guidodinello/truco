@@ -59,7 +59,7 @@ class Card:
     def __repr__(self) -> str:
         return f"Card({self.suit.name}, {self.rank.name})"
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, Card):
             return False
         return self.suit == other.suit and self.rank == other.rank

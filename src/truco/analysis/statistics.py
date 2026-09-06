@@ -1,11 +1,31 @@
 """Statistical analysis for Truco Uruguayo simulations."""
 
-from typing import Any, Dict
+from typing import Any, Dict, TypedDict
 
 import numpy as np
 
 from truco.domain.card import Rank, Suit
 from truco.simulation.simulator import SimulationResult
+
+
+class SameTeamProbabilityStats(TypedDict):
+    when_multiple_flowers: float
+    by_flower_count: Dict[int, float]
+
+
+class SameTeamPiezaProbabilityStats(TypedDict):
+    when_multiple_piezas: float
+    by_pieza_count: Dict[int, float]
+
+
+class TeamAdvantageStats(TypedDict):
+    team_advantage_probability: float
+    flower_distribution_by_advantage: Dict[int, float]
+
+
+class PiezaTeamAdvantageStats(TypedDict):
+    team_advantage_probability: float
+    pieza_distribution_by_advantage: Dict[int, float]
 
 
 class StatisticsAnalyzer:
@@ -52,7 +72,7 @@ class StatisticsAnalyzer:
 
         return counts
 
-    def calculate_conditional_same_team_probability(self) -> Dict[str, float]:
+    def calculate_conditional_same_team_probability(self) -> SameTeamProbabilityStats:
         """
         Calculate conditional probabilities of flowers being in the same team.
 
@@ -67,7 +87,10 @@ class StatisticsAnalyzer:
         same_team_flags = self.results.all_flowers_same_team
 
         # Initialize results
-        result = {"when_multiple_flowers": 0.0, "by_flower_count": {}}
+        result: SameTeamProbabilityStats = {
+            "when_multiple_flowers": 0.0,
+            "by_flower_count": {},
+        }
 
         # Count games with multiple flowers (2 or more)
         multi_flower_indices = [
@@ -100,7 +123,9 @@ class StatisticsAnalyzer:
 
         return result
 
-    def calculate_conditional_same_team_pieza_probability(self) -> Dict[str, float]:
+    def calculate_conditional_same_team_pieza_probability(
+        self,
+    ) -> SameTeamPiezaProbabilityStats:
         """
         Calculate conditional probabilities of piezas being in the same team.
 
@@ -115,7 +140,10 @@ class StatisticsAnalyzer:
         same_team_flags = self.results.all_piezas_same_team
 
         # Initialize results
-        result = {"when_multiple_piezas": 0.0, "by_pieza_count": {}}
+        result: SameTeamPiezaProbabilityStats = {
+            "when_multiple_piezas": 0.0,
+            "by_pieza_count": {},
+        }
 
         # Count games with multiple piezas (2 or more)
         multi_pieza_indices = [i for i, count in enumerate(pieza_counts) if count >= 2]
@@ -146,7 +174,7 @@ class StatisticsAnalyzer:
 
         return result
 
-    def calculate_team_advantage(self) -> Dict[str, Any]:
+    def calculate_team_advantage(self) -> TeamAdvantageStats:
         """
         Calculate team advantage statistics based on flower distribution.
 
@@ -157,7 +185,7 @@ class StatisticsAnalyzer:
             - flower_distribution_by_advantage: Distribution of flower count
               differences between teams
         """
-        result = {
+        result: TeamAdvantageStats = {
             "team_advantage_probability": 0.0,
             "flower_distribution_by_advantage": {},
         }
@@ -195,7 +223,7 @@ class StatisticsAnalyzer:
 
         return result
 
-    def calculate_pieza_team_advantage(self) -> Dict[str, Any]:
+    def calculate_pieza_team_advantage(self) -> PiezaTeamAdvantageStats:
         """
         Calculate team advantage statistics based on pieza distribution.
 
@@ -206,7 +234,7 @@ class StatisticsAnalyzer:
             - pieza_distribution_by_advantage: Distribution of pieza count
               differences between teams
         """
-        result = {
+        result: PiezaTeamAdvantageStats = {
             "team_advantage_probability": 0.0,
             "pieza_distribution_by_advantage": {},
         }
@@ -261,7 +289,7 @@ class StatisticsAnalyzer:
             }
 
         # Analyze suit distribution
-        suit_counts = {}
+        suit_counts: Dict[int, int] = {}
         for suit_value in self.results.muestra_suits:
             suit_counts[suit_value] = suit_counts.get(suit_value, 0) + 1
 
@@ -270,7 +298,7 @@ class StatisticsAnalyzer:
         }
 
         # Analyze rank distribution
-        rank_counts = {}
+        rank_counts: Dict[int, int] = {}
         for rank_value in self.results.muestra_ranks:
             rank_counts[rank_value] = rank_counts.get(rank_value, 0) + 1
 
@@ -445,35 +473,4 @@ class StatisticsAnalyzer:
             "conditional_probabilities": conditional_probs,
             "flower_stats": flower_stats,
             "pieza_stats": pieza_stats,
-        }
-
-    def calculate_confidence_interval(
-        self, probability: float, sample_size: int, confidence: float = 0.95
-    ) -> Dict[str, float]:
-        """
-        Calculate confidence interval for a probability estimate.
-
-        Args:
-            probability: Estimated probability
-            sample_size: Number of samples used for estimation
-            confidence: Confidence level (default 0.95 for 95% confidence)
-
-        Returns:
-            Dictionary with lower and upper bounds of the confidence interval
-        """
-        import scipy.stats as stats
-
-        # Critical value for the given confidence level
-        critical_value = stats.norm.ppf((1 + confidence) / 2)
-
-        # Standard error
-        std_error = (probability * (1 - probability) / sample_size) ** 0.5
-
-        # Margin of error
-        margin = critical_value * std_error
-
-        return {
-            "lower_bound": max(0, probability - margin),
-            "upper_bound": min(1, probability + margin),
-            "margin_of_error": margin,
         }

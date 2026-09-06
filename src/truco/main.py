@@ -12,7 +12,7 @@ from truco.simulation.simulator import SimulationResult, Simulator
 from truco.visualization.visualizer import Visualizer
 
 
-def main():
+def main() -> None:
     """Run simulations and generate statistics and visualizations."""
     parser = argparse.ArgumentParser(
         description="Truco Uruguayo Probability Simulator",
@@ -117,8 +117,13 @@ def main():
             )
             results.all_piezas_same_team.append(all_piezas_same)
 
-            results.muestra_ranks.append(game.muestra.rank.value)
-            results.muestra_suits.append(game.muestra.suit.value)
+            muestra = game.muestra
+            if muestra is None:
+                raise RuntimeError(
+                    "deal_cards() must be called before reading its muestra"
+                )
+            results.muestra_ranks.append(muestra.rank.value)
+            results.muestra_suits.append(muestra.suit.value)
 
     # Analyze results
     analyzer = StatisticsAnalyzer(results)
