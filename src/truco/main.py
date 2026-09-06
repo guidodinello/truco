@@ -93,12 +93,30 @@ def main():
 
         game = simulator.game
 
-        for _ in tqdm(range(args.num_simulations), desc="Simulating games"):
-            game.deal_cards(seed=args.seed)
+        for i in tqdm(range(args.num_simulations), desc="Simulating games"):
+            game_seed = None if args.seed is None else args.seed + i
+            game.deal_cards(seed=game_seed)
 
             results.players_with_flower.append(game.count_players_with_flower())
             results.flower_distribution.append(game.get_flower_distribution())
             results.all_flowers_same_team.append(game.is_all_flowers_in_same_team())
+
+            piezas_by_team = game.get_pieza_distribution()
+            players_with_pieza_count = game.count_players_with_piezas()
+            results.players_with_pieza.append(players_with_pieza_count)
+            results.pieza_distribution.append(piezas_by_team)
+            all_piezas_same = (
+                any(
+                    count == players_with_pieza_count
+                    for count in piezas_by_team.values()
+                )
+                if players_with_pieza_count > 0
+                else False
+            )
+            results.all_piezas_same_team.append(all_piezas_same)
+
+            results.muestra_ranks.append(game.muestra.rank.value)
+            results.muestra_suits.append(game.muestra.suit.value)
 
     # Analyze results
     analyzer = StatisticsAnalyzer(results)

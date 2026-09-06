@@ -1,5 +1,5 @@
-- [] chequear a mano alguna facil a ver si tiene sentido
-- [] sanity checks como el muestra distribution, deberia ser uniforme si esta bien hecha la simulacion
-- [] el cli.py no se esta usando
+- [x] chequear a mano alguna facil a ver si tiene sentido (ver tests/test_hand.py)
+- [x] sanity checks como el muestra distribution, deberia ser uniforme si esta bien hecha la simulacion (ver tests/test_muestra_distribution.py)
+- [x] el cli.py no se esta usando (eliminado, no lo importaba nadie)
 - [] optimizar con numpy/numba/mojo/pandas/dataclass, usar un profiler para ver donde demora
-- [] paralelizar hands, son independientes!
+- [x] paralelizar hands, son independientes! (ya estaba implementado en Simulator.run_simulations_parallel; agregado test de cobertura en tests/test_simulator_parallel.py)
