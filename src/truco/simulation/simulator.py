@@ -40,7 +40,12 @@ class SimulationResult:
 
 # Define the worker function at module level (not inside another function)
 # to make it picklable for multiprocessing
-def worker_function(num_sims, worker_seed, players_per_team, num_teams):
+def worker_function(
+    num_sims: int,
+    worker_seed: Optional[int],
+    players_per_team: int,
+    num_teams: int,
+) -> Dict[str, list]:
     game = Game(players_per_team, num_teams)
 
     players_with_flower = []
@@ -151,7 +156,7 @@ class Simulator:
     def run_simulations_parallel(
         self,
         num_simulations: int,
-        num_workers: int = None,
+        num_workers: Optional[int] = None,
         seed: Optional[int] = None,
     ) -> SimulationResult:
         """Run simulations in parallel using multiprocessing."""
