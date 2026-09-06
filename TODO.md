@@ -1,0 +1,5 @@
+- [] chequear a mano alguna facil a ver si tiene sentido
+- [] sanity checks como el muestra distribution, deberia ser uniforme si esta bien hecha la simulacion
+- [] el cli.py no se esta usando
+- [] optimizar con numpy/numba/mojo/pandas/dataclass, usar un profiler para ver donde demora
+- [] paralelizar hands, son independientes!
