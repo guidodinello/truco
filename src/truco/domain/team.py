@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Optional
 
 from truco.domain.card import Card
 from truco.domain.player import Player
 
 
 class Team:
-    def __init__(self, team_id: int, name: str = None):
+    def __init__(self, team_id: int, name: Optional[str] = None):
         self.id = team_id
         self.name = name or f"Team {team_id}"
         self.players: List[Player] = []
@@ -14,7 +14,7 @@ class Team:
         player.set_team(self.id)
         self.players.append(player)
 
-    def get_players_with_flower(self, muestra: Card = None) -> List[Player]:
+    def get_players_with_flower(self, muestra: Optional[Card] = None) -> List[Player]:
         """
         Get all players in the team who have a flower.
 
@@ -26,7 +26,9 @@ class Team:
         """
         return [player for player in self.players if player.has_flower(muestra)]
 
-    def has_players_with_flower(self, count: int, muestra: Card = None) -> bool:
+    def has_players_with_flower(
+        self, count: int, muestra: Optional[Card] = None
+    ) -> bool:
         """
         Check if at least 'count' players in the team have a flower.
 

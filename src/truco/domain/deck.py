@@ -5,7 +5,7 @@ from truco.domain.card import Card, Rank, Suit
 
 
 class Deck:
-    def __init__(self):
+    def __init__(self) -> None:
         self.cards = self._create_standard_deck()
         self.shuffled = False
         self.muestra = None

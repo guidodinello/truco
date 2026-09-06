@@ -19,4 +19,5 @@ repos:
       rev: v1.9.0
       hooks:
           - id: mypy
-            additional_dependencies: ["types-requests", "numpy>=2.2.5"]
+            additional_dependencies:
+                ["types-requests", "types-tqdm>=4.67.0", "numpy>=2.2.5"]

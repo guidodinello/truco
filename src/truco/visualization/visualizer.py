@@ -1,7 +1,7 @@
 """Visualization tools for Truco Uruguayo simulation results."""
 
 import os
-from typing import Optional
+from typing import Dict, Optional
 
 import matplotlib.pyplot as plt
 
@@ -42,7 +42,12 @@ class Visualizer:
         # Create plot
         plt.figure(figsize=(10, 6))
 
-        plt.bar(distribution.keys(), distribution.values(), color="#5DA5DA", alpha=0.8)
+        plt.bar(
+            list(distribution.keys()),
+            list(distribution.values()),
+            color="#5DA5DA",
+            alpha=0.8,
+        )
 
         # Add percentage labels on bars
         for count, prob in distribution.items():
@@ -85,7 +90,12 @@ class Visualizer:
         # Create plot
         plt.figure(figsize=(10, 6))
 
-        plt.bar(distribution.keys(), distribution.values(), color="#60BD68", alpha=0.8)
+        plt.bar(
+            list(distribution.keys()),
+            list(distribution.values()),
+            color="#60BD68",
+            alpha=0.8,
+        )
 
         # Add percentage labels on bars
         for count, prob in distribution.items():
@@ -559,7 +569,7 @@ class Visualizer:
             return
 
         # Count suit distribution
-        suit_counts = {}
+        suit_counts: Dict[int, int] = {}
         for suit_val in self.results.muestra_suits:
             suit_counts[suit_val] = suit_counts.get(suit_val, 0) + 1
 

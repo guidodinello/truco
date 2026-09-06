@@ -1,18 +1,20 @@
+from typing import Optional
+
 from truco.domain.card import Card
 from truco.domain.hand import Hand
 
 
 class Player:
-    def __init__(self, player_id: int, name: str = None):
+    def __init__(self, player_id: int, name: Optional[str] = None):
         self.id = player_id
         self.name = name or f"Player {player_id}"
         self.hand = Hand()
-        self.team_id = None
+        self.team_id: Optional[int] = None
 
     def set_team(self, team_id: int) -> None:
         self.team_id = team_id
 
-    def has_flower(self, muestra: Card = None) -> bool:
+    def has_flower(self, muestra: Optional[Card] = None) -> bool:
         """
         Check if the player has a flower.
 
