@@ -170,7 +170,8 @@ class Visualizer:
         plt.xlabel("Number of Players with Flowers")
         plt.ylabel("Probability All Flowers in Same Team")
         plt.title(
-            "Conditional Probability: All Flowers in Same Team\nGiven N Players Have Flowers"
+            "Conditional Probability: All Flowers in Same Team\n"
+            "Given N Players Have Flowers"
         )
 
         plt.xticks(counts)
@@ -248,7 +249,8 @@ class Visualizer:
         plt.xlabel("Number of Players with Piezas")
         plt.ylabel("Probability All Piezas in Same Team")
         plt.title(
-            "Conditional Probability: All Piezas in Same Team\nGiven N Players Have Piezas"
+            "Conditional Probability: All Piezas in Same Team\n"
+            "Given N Players Have Piezas"
         )
 
         plt.xticks(counts)
@@ -580,7 +582,7 @@ class Visualizer:
         plt.bar(names, probs, color="#F15854", alpha=0.8)
 
         # Add percentage labels
-        for i, name in enumerate(names):
+        for i, _name in enumerate(names):
             plt.text(
                 i, probs[i] + 0.01, f"{probs[i]:.1%}", ha="center", fontweight="bold"
             )
@@ -649,7 +651,7 @@ class Visualizer:
         plt.bar(categories, values, color=colors, alpha=0.8)
 
         # Add percentage labels
-        for i, cat in enumerate(categories):
+        for i, _cat in enumerate(categories):
             plt.text(
                 i, values[i] + 0.01, f"{values[i]:.1%}", ha="center", fontweight="bold"
             )

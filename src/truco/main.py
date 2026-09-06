@@ -59,14 +59,16 @@ def main():
 
     print(f"Running {args.num_simulations} simulations...")
     print(
-        f"Configuration: {args.players_per_team} players per team, {args.num_teams} teams"
+        f"Configuration: {args.players_per_team} players per team, "
+        f"{args.num_teams} teams"
     )
 
     from tqdm import tqdm
 
     print(f"Running {args.num_simulations} simulations...")
     print(
-        f"Configuration: {args.players_per_team} players per team, {args.num_teams} teams"
+        f"Configuration: {args.players_per_team} players per team, "
+        f"{args.num_teams} teams"
     )
 
     # Run simulations with progress bar
@@ -126,13 +128,16 @@ def main():
     print("\n=== Flower Statistics ===")
     print(f"Average players with flower: {flower_stats['mean']:.2f}")
     print(
-        f"Probability of at least one flower: {flower_stats['probability_at_least_one']:.1%}"
+        "Probability of at least one flower: "
+        f"{flower_stats['probability_at_least_one']:.1%}"
     )
     print(
-        f"Probability of multiple flowers: {flower_stats['probability_multiple_flowers']:.1%}"
+        "Probability of multiple flowers: "
+        f"{flower_stats['probability_multiple_flowers']:.1%}"
     )
     print(
-        f"When multiple flowers occur, probability all in same team: {flower_stats['conditional_same_team_probability']:.1%}"
+        "When multiple flowers occur, probability all in same team: "
+        f"{flower_stats['conditional_same_team_probability']:.1%}"
     )
 
     # Display pieza statistics
@@ -141,13 +146,16 @@ def main():
         print("\n=== Pieza Statistics ===")
         print(f"Average players with pieza: {pieza_stats['mean']:.2f}")
         print(
-            f"Probability of at least one pieza: {pieza_stats['probability_at_least_one']:.1%}"
+            "Probability of at least one pieza: "
+            f"{pieza_stats['probability_at_least_one']:.1%}"
         )
         print(
-            f"Probability of multiple piezas: {pieza_stats['probability_multiple_piezas']:.1%}"
+            "Probability of multiple piezas: "
+            f"{pieza_stats['probability_multiple_piezas']:.1%}"
         )
         print(
-            f"When multiple piezas occur, probability all in same team: {pieza_stats['conditional_same_team_probability']:.1%}"
+            "When multiple piezas occur, probability all in same team: "
+            f"{pieza_stats['conditional_same_team_probability']:.1%}"
         )
 
     # Display combined statistics
@@ -158,7 +166,8 @@ def main():
 
         print("\n=== Combined Statistics ===")
         print(
-            f"Probability of both flower and pieza: {joint_probs['both_flower_and_pieza']:.1%}"
+            "Probability of both flower and pieza: "
+            f"{joint_probs['both_flower_and_pieza']:.1%}"
         )
         print(
             f"Probability of flower given pieza: {cond_probs['flower_given_pieza']:.1%}"
