@@ -9,7 +9,7 @@ repos:
           - id: check-toml
 
     - repo: https://github.com/astral-sh/ruff-pre-commit
-      rev: v0.16.5
+      rev: v0.16.6
       hooks:
           - id: ruff
             args: [--fix]
@@ -20,4 +20,4 @@ repos:
       hooks:
           - id: mypy
             additional_dependencies:
-                ["types-requests", "types-tqdm>=4.70.0.20260827", "numpy>=2.5.2"]
+                ["types-requests", "types-tqdm>=4.70.0.20260906", "numpy>=2.5.3"]
