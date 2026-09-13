@@ -5,7 +5,7 @@ description = "Truco Uruguayo Probability Simulator"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "numpy>=2.5.2",
+    "numpy>=2.5.3",
     "matplotlib>=3.11.1",
     "tqdm>=4.70.0",
 ]
@@ -13,10 +13,10 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pre-commit>=4.6.2",
-    "ruff>=0.16.5",
+    "ruff>=0.16.6",
     "mypy>=2.3.1",
     "pytest>=9.1.1",
-    "types-tqdm>=4.70.0.20260827",
+    "types-tqdm>=4.70.0.20260906",
 ]
 
 [project.scripts]
