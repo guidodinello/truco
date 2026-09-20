@@ -1,5 +1,6 @@
 import random
 from dataclasses import dataclass
+from itertools import accumulate
 from typing import Any, Dict, List, Optional, TypedDict
 
 from truco.domain.game import Game
@@ -110,6 +111,38 @@ def worker_function(
     }
 
 
+def _partition_simulations(
+    num_simulations: int, num_workers: int, seed: Optional[int]
+) -> tuple[List[int], List[Optional[int]]]:
+    """Split simulations across workers and assign each a seed.
+
+    Each worker gets a contiguous, disjoint slice of the global seed
+    sequence, so the union of per-worker seeds is exactly
+    seed..seed+num_simulations-1 -- the same set run_simulations uses. A
+    fixed stride would overlap as soon as a worker ran more games than the
+    stride, and since deal_cards(seed) is deterministic, overlapping seeds
+    re-deal identical hands.
+    """
+    sims_per_worker = [num_simulations // num_workers] * num_workers
+    for i in range(num_simulations % num_workers):
+        sims_per_worker[i] += 1
+
+    worker_seeds: List[Optional[int]]
+    if seed is None:
+        worker_seeds = [None] * num_workers
+    else:
+        # accumulate(..., initial=0) yields one more value than
+        # sims_per_worker (the leading 0 plus a running total after each
+        # worker) -- zip truncates to sims_per_worker's length by design, so
+        # strict=False here is intentional, not an oversight.
+        offsets = accumulate(sims_per_worker, initial=0)
+        worker_seeds = [
+            seed + offset for offset, _ in zip(offsets, sims_per_worker, strict=False)
+        ]
+
+    return sims_per_worker, worker_seeds
+
+
 class Simulator:
     def __init__(self, num_players_per_team: int = 3, num_teams: int = 2):
         self.game = Game(num_players_per_team, num_teams)
@@ -189,23 +222,17 @@ class Simulator:
         if num_workers is None:
             num_workers = mp.cpu_count()
 
-        # Divide simulations among workers
-        sims_per_worker = [num_simulations // num_workers] * num_workers
-        # Distribute remainder
-        for i in range(num_simulations % num_workers):
-            sims_per_worker[i] += 1
-
-        # Set up seeds for each worker to ensure reproducibility
-        worker_seeds: List[Optional[int]]
-        if seed is not None:
-            worker_seeds = [seed + i * 1000 for i in range(num_workers)]
-        else:
-            worker_seeds = [None] * num_workers
+        # Divide simulations among workers and assign each a disjoint seed
+        # slice (see _partition_simulations' docstring for why this must be
+        # contiguous rather than a fixed stride).
+        sims_per_worker, worker_seeds = _partition_simulations(
+            num_simulations, num_workers, seed
+        )
 
         # Prepare arguments for each worker
         args = [
-            (sims, seed, self.game.num_players_per_team, self.game.num_teams)
-            for sims, seed in zip(sims_per_worker, worker_seeds, strict=False)
+            (sims, worker_seed, self.game.num_players_per_team, self.game.num_teams)
+            for sims, worker_seed in zip(sims_per_worker, worker_seeds, strict=True)
         ]
 
         # Run simulations in parallel
