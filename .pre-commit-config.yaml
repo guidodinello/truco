@@ -20,4 +20,4 @@ repos:
       hooks:
           - id: mypy
             additional_dependencies:
-                ["types-requests", "types-tqdm>=4.70.0.20260906", "numpy>=2.5.4", "pytest"]
+                ["types-requests", "types-tqdm>=4.70.0.20261102", "numpy>=2.5.4", "pytest"]
